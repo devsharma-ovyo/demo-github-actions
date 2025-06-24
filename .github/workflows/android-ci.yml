@@ -1,4 +1,4 @@
-name: Android CI (Dynamic Flavors)
+name: Android CI (Flavor-based)
 
 on:
   workflow_dispatch:
@@ -38,5 +38,5 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.inputs.flavor }}-debug-apk
-          path: app/build/outputs/apk/${{ github.event.inputs.flavor }}/debug/app-${{ github.event.inputs.flavor }}-debug.apk
+          name: app-${{ github.event.inputs.flavor }}-debug.apk
+          path: app/build/outputs/apk/${{ github.event.inputs.flavor }}/debug/*.apk
