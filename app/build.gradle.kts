@@ -27,6 +27,11 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+    }
+
     flavorDimensions += "env"
 
     productFlavors {
