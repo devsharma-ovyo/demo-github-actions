@@ -1,12 +1,12 @@
-name: Android CI (Multi-Environment)
+name: Android CI (Dynamic Flavors)
 
 on:
   workflow_dispatch:
     inputs:
       flavor:
-        description: "Environment to build"
+        description: 'Environment flavor to build (e.g., dev, staging, prod)'
         required: true
-        default: "dev"
+        default: 'dev'
         type: choice
         options:
           - dev
@@ -15,11 +15,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    env:
-      BUILD_VARIANT: ${{ github.event.inputs.flavor }}Debug
 
     steps:
       - name: Checkout code
@@ -31,17 +27,16 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
-      - name: Grant execute permission for Gradle
+      - name: Grant execute permission to Gradle
         run: chmod +x ./gradlew
 
-      - name: Build selected environment
-               - run: |
-               - echo "Building environment: $BUILD_VARIANT"
-               - ./gradlew assemble$BUILD_VARIANT
-        run: ./gradlew assemble${{ env.BUILD_VARIANT }}
+      - name: Build selected flavor
+        run: |
+          echo "Building flavor: ${{ github.event.inputs.flavor }}Debug"
+          ./gradlew assemble${{ github.event.inputs.flavor }}Debug
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BUILD_VARIANT }}-apk
-          path: app/build/outputs/apk/**/${{ env.BUILD_VARIANT | toLower }}.apk
+          name: ${{ github.event.inputs.flavor }}-debug-apk
+          path: app/build/outputs/apk/${{ github.event.inputs.flavor }}/debug/app-${{ github.event.inputs.flavor }}-debug.apk
