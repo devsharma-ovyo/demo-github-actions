@@ -30,6 +30,16 @@ jobs:
       - name: Grant execute permission to Gradle
         run: chmod +x ./gradlew
 
+      - name: Run Android Lint
+        run: ./gradlew lint${{ github.event.inputs.flavor }}Debug
+
+      - name: Upload Lint HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+         name: lint-report-${{ github.event.inputs.flavor }}
+         path: app/build/reports/lint-results-${{ github.event.inputs.flavor }}Debug.html
+
       - name: Build selected flavor
         run: |
           echo "Building flavor: ${{ github.event.inputs.flavor }}Debug"
