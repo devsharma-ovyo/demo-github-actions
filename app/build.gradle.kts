@@ -26,6 +26,27 @@ android {
             )
         }
     }
+
+    flavorDimensions += "env"
+
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            buildConfigField("String", "BASE_URL", "\"https://dev.example.com/api/\"")
+        }
+        create("staging") {
+            dimension = "env"
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
+            buildConfigField("String", "BASE_URL", "\"https://staging.example.com/api/\"")
+        }
+        create("prod") {
+            dimension = "env"
+            buildConfigField("String", "BASE_URL", "\"https://api.example.com/\"")
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
