@@ -1,4 +1,4 @@
-name: Android CI (Flavor-based)
+name: Android CI
 
 on:
   workflow_dispatch:
