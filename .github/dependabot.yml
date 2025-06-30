@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # For Android (Gradle)
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+
+  # For GitHub Actions workflows (optional)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
