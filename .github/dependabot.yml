@@ -1,14 +1,26 @@
-version: 2
-updates:
-  # For Android (Gradle)
-  - package-ecosystem: "gradle"
+version: 2 # The version of the Dependabot configuration file format
+updates: # List of package ecosystems to update
+  - package-ecosystem: "gradle" # The package ecosystem to update, in this case Gradle
     directory: "/"
     schedule:
       interval: "daily"
+      time: "10:00"
+      timezone: "Asia/Kolkata"
     open-pull-requests-limit: 5
+    ignore: # List of dependencies to ignore
+      - dependency-name: "androidx.appcompat:appcompat"
+        versions: [">=1.6.0"] # Ignore updates for androidx.appcompat:appcompat version 1.6.0 and above
+    labels: # Labels to apply to the pull requests created by Dependabot
+      - "dependencies"
+      - "gradle"
+    versioning-strategy: increase-if-necessary # Strategy for updating versions, in this case, increase if necessary
 
-  # For GitHub Actions workflows (optional)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    labels:
+      - "actions"
+    commit-message:
+      prefix: "ci"
+    versioning-strategy: increase
