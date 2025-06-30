@@ -1,0 +1,102 @@
+name: Release CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      major_version:
+        description: 'Major version'
+        required: true
+        default: '1'
+      minor_version:
+        description: 'Minor version'
+        required: true
+        default: '0'
+      patch_version:
+        description: 'Patch version'
+        required: true
+        default: '0'
+      version_code:
+        description: 'Version code'
+        required: true
+        default: '100'
+
+env:
+  VERSION_NAME: ${{ inputs.major_version }}.${{ inputs.minor_version }}.${{ inputs.patch_version }}
+  VERSION_CODE: ${{ inputs.version_code }}
+
+jobs:
+  build-variants:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        env: ["Qa", "Staging", "Prod"]
+        signed: ['true', 'false']
+        debug: ['true', 'false']
+        exclude:
+          - debug: 'false'
+            signed: 'false'
+            env: "Qa"
+          - debug: 'false'
+            signed: 'false'
+            env: "Staging"
+          - debug: 'true'
+            signed: 'false'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Build Debug APK (signed)
+        if: ${{ matrix.debug == 'true' && matrix.signed == 'true' }}
+        run: ./gradlew app:assemble${{ matrix.env }}Debug
+
+      - name: Build Release APK (signed)
+        if: ${{ matrix.debug == 'false' && matrix.signed == 'true' }}
+        run: ./gradlew app:assemble${{ matrix.env }}Release
+
+      - name: Build Release AAB (unsigned)
+        if: ${{ matrix.debug == 'false' && matrix.signed == 'false' }}
+        run: ./gradlew app:bundle${{ matrix.env }}Release
+
+      - name: Move APKs
+        if: ${{ matrix.signed == 'true' }}
+        run: find . -name '*.apk' -exec cp {} . \;
+
+      - name: Move AABs
+        if: ${{ matrix.debug == 'false' && matrix.signed == 'false' }}
+        run: find . -name '*-release.aab' -exec cp {} . \;
+
+      - name: Upload debug APK
+        if: ${{ matrix.debug == 'true' && matrix.signed == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.env }}-v${{ env.VERSION_NAME }}-c${{ env.VERSION_CODE }}-debug-signed
+          path: '*.apk'
+
+      - name: Upload signed APK
+        if: ${{ matrix.debug == 'false' && matrix.signed == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.env }}-v${{ env.VERSION_NAME }}-c${{ env.VERSION_CODE }}-release-signed
+          path: '*.apk'
+
+      - name: Upload unsigned AAB
+        if: ${{ matrix.debug == 'false' && matrix.signed == 'false' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.env }}-v${{ env.VERSION_NAME }}-c${{ env.VERSION_CODE }}-release-unsigned
+          path: '*.aab'

@@ -1,12 +1,13 @@
 name: Android CI
 
 on:
-  push:
-    branches:
-      - main
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'release/**'
+  #push:
+  #branches:
+  # - '*'
+  #- main
+  # - 'feature/**'
+  # - 'bugfix/**'
+  # - 'release/**'
   pull_request:
     branches:
       - main
@@ -42,6 +43,11 @@ jobs:
         run: |
           echo "Building dev flavor..."
           ./gradlew assembleDevDebug --no-daemon --parallel --build-cache
+
+      - name: Run Unit Tests
+        run: |
+          echo "Running unit tests..."
+          ./gradlew test --no-daemon --build-cache
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
