@@ -1,13 +1,13 @@
 name: Android CI
 
 on:
-  push:
-    branches:
-      - '*'
-      - main
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'release/**'
+  #push:
+  #branches:
+  # - '*'
+  #- main
+  # - 'feature/**'
+  # - 'bugfix/**'
+  # - 'release/**'
   pull_request:
     branches:
       - main
