@@ -50,7 +50,7 @@ jobs:
           ./gradlew test --no-daemon --build-cache
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: app-dev-debug.apk
           path: app/build/outputs/apk/dev/debug/*.apk

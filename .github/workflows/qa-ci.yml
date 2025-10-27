@@ -46,7 +46,7 @@ jobs:
           ./gradlew assemble${{ github.event.inputs.flavor }}Debug --no-daemon --parallel --build-cache
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: app-${{ github.event.inputs.flavor }}-debug.apk
           path: app/build/outputs/apk/${{ github.event.inputs.flavor }}/debug/*.apk
