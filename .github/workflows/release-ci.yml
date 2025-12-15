@@ -82,21 +82,21 @@ jobs:
 
       - name: Upload debug APK
         if: ${{ matrix.debug == 'true' && matrix.signed == 'true' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: app-${{ matrix.env }}-v${{ env.VERSION_NAME }}-c${{ env.VERSION_CODE }}-debug-signed
           path: '*.apk'
 
       - name: Upload signed APK
         if: ${{ matrix.debug == 'false' && matrix.signed == 'true' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: app-${{ matrix.env }}-v${{ env.VERSION_NAME }}-c${{ env.VERSION_CODE }}-release-signed
           path: '*.apk'
 
       - name: Upload unsigned AAB
         if: ${{ matrix.debug == 'false' && matrix.signed == 'false' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: app-${{ matrix.env }}-v${{ env.VERSION_NAME }}-c${{ env.VERSION_CODE }}-release-unsigned
           path: '*.aab'
